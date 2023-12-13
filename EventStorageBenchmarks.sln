@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{FE6415EE-96F5-4B65-B501-7266B6BD372C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageProviders", "StorageProviders\StorageProviders.csproj", "{02405779-0FD6-4437-8335-A812C42506CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageProviders.Tests", "StorageProviders.Tests\StorageProviders.Tests.csproj", "{97772ED1-AA68-48AB-9AE7-CF2F6E698897}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FE6415EE-96F5-4B65-B501-7266B6BD372C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE6415EE-96F5-4B65-B501-7266B6BD372C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE6415EE-96F5-4B65-B501-7266B6BD372C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE6415EE-96F5-4B65-B501-7266B6BD372C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02405779-0FD6-4437-8335-A812C42506CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02405779-0FD6-4437-8335-A812C42506CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02405779-0FD6-4437-8335-A812C42506CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02405779-0FD6-4437-8335-A812C42506CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97772ED1-AA68-48AB-9AE7-CF2F6E698897}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97772ED1-AA68-48AB-9AE7-CF2F6E698897}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97772ED1-AA68-48AB-9AE7-CF2F6E698897}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97772ED1-AA68-48AB-9AE7-CF2F6E698897}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

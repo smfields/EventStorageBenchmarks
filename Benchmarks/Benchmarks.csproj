@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>EventStorageBenchmarks.Benchmarks</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BenchmarkDotNet" Version="0.13.11" />
+      <PackageReference Include="EventStore.Client.Grpc.Streams" Version="23.1.0" />
+      <PackageReference Include="Marten" Version="6.4.0" />
+      <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+      <PackageReference Include="Testcontainers.EventStoreDb" Version="3.6.0" />
+      <PackageReference Include="Testcontainers.MongoDb" Version="3.6.0" />
+      <PackageReference Include="Testcontainers.PostgreSql" Version="3.6.0" />
+      <PackageReference Include="Testcontainers.Redis" Version="3.6.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\StorageProviders\StorageProviders.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -10,10 +10,7 @@ public class EventStoreDb : IEventStorage, IAsyncDisposable
     
     public async Task InitializeAsync()
     {
-        Container = new EventStoreDbBuilder()
-            .WithEnvironment("EVENTSTORE_LOG_LEVEL", "Verbose")
-            .WithCommand("--enable-atom-pub-over-http")
-            .Build();
+        Container = new EventStoreDbBuilder().Build();
         await Container.StartAsync();
 
         var clientSettings = EventStoreClientSettings.Create(Container.GetConnectionString());

@@ -44,33 +44,27 @@ public class AppendBenchmarks
     [Benchmark]
     public async Task AppendSequential()
     {
+        var streamId = Guid.NewGuid().ToString();
+        var expectedVersion = 0;
+        
         foreach (var eventData in Events)
         {
             await EventStorage.AppendEventsAsync(
-                Guid.NewGuid().ToString(),
+                streamId,
+                expectedVersion++,
                 [eventData]
             );
         }
     }
     
     [Benchmark]
-    public async Task AppendParallel()
-    {
-        var tasks = Events
-            .Select(eventData => EventStorage.AppendEventsAsync(
-                Guid.NewGuid().ToString(), 
-                [eventData]
-            ))
-            .ToList();
-
-        await Task.WhenAll(tasks);
-    }
-    
-    [Benchmark]
     public async Task AppendBatch()
     {
+        var streamId = Guid.NewGuid().ToString();
+        
         await EventStorage.AppendEventsAsync(
-            Guid.NewGuid().ToString(),
+            streamId,
+            0,
             Events
         );
     }

@@ -1,4 +1,5 @@
-﻿using Marten;
+﻿using System.Text.RegularExpressions;
+using Marten;
 using Marten.Events;
 using Marten.Exceptions;
 using Polly;
@@ -26,25 +27,31 @@ public class MartenDb : IEventStorage, IAsyncDisposable
         });
     }
 
-    public async Task AppendEventsAsync(string streamId, IEnumerable<byte[]> events)
+    public async Task AppendEventsAsync(string streamId, int expectedVersion, IEnumerable<byte[]> events)
     {
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddRetry(new RetryStrategyOptions
-            {
-                ShouldHandle = new PredicateBuilder()
-                    .Handle<ExistingStreamIdCollisionException>()
-                    .Handle<EventStreamUnexpectedMaxEventIdException>(),
-                Delay = TimeSpan.Zero,
-                MaxRetryAttempts = int.MaxValue
-            })
-            .Build();
+        var eventList = events.ToList();
+        
+        await using var session = Db.LightweightSession();
 
-        await pipeline.ExecuteAsync(async cancellationToken =>
+        if (expectedVersion == 0)
         {
-            await using var session = Db.LightweightSession();
-            session.Events.Append(streamId, events: events);
-            await session.SaveChangesAsync(cancellationToken);
-        });
+            session.Events.StartStream(streamId, eventList);
+        }
+        else
+        {
+            session.Events.Append(streamId, expectedVersion + eventList.Count, events: eventList);
+        }
+
+        try
+        {
+            await session.SaveChangesAsync();
+        }
+        catch (EventStreamUnexpectedMaxEventIdException e)
+        {
+            var actualVersionIndex = e.Message.LastIndexOf("but was ", StringComparison.Ordinal) + "but was ".Length;
+            var actualVersion = int.Parse(e.Message[actualVersionIndex..]);
+            throw new UnexpectedStreamVersionException(expectedVersion, actualVersion);
+        }
     }
 
     public async IAsyncEnumerable<byte[]> ReadEventsAsync(string streamId)

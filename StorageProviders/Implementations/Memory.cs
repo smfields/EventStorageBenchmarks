@@ -4,10 +4,18 @@ public class Memory : IEventStorage
 {
     private readonly Dictionary<string, List<byte[]>> _events = new();
     
-    public Task AppendEventsAsync(string streamId, IEnumerable<byte[]> events)
+    public Task AppendEventsAsync(string streamId, int expectedVersion, IEnumerable<byte[]> events)
     {
         _events.TryAdd(streamId, []);
-        _events[streamId].AddRange(events);
+            
+        var streamEvents = _events[streamId];
+
+        if (streamEvents.Count != expectedVersion)
+        {
+            throw new UnexpectedStreamVersionException(expectedVersion, streamEvents.Count);
+        }
+            
+        streamEvents.AddRange(events);
         return Task.CompletedTask;
     }
 

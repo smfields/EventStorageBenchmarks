@@ -3,6 +3,6 @@
 public interface IEventStorage
 {
     public Task InitializeAsync() => Task.CompletedTask;
-    public Task AppendEventsAsync(string streamId, IEnumerable<byte[]> events);
+    public Task AppendEventsAsync(string streamId, int expectedVersion, IEnumerable<byte[]> events);
     public IAsyncEnumerable<byte[]> ReadEventsAsync(string streamId);
 }

@@ -27,7 +27,7 @@ public class ReadBenchmarks
             .ToList();
         
         await EventStorage.InitializeAsync();
-        await EventStorage.AppendEventsAsync(StreamId, events);
+        await EventStorage.AppendEventsAsync(StreamId, 0, events);
     }
 
     [GlobalCleanup]

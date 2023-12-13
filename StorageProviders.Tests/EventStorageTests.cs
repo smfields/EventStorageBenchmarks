@@ -4,7 +4,7 @@ using EventStorageBenchmarks.StorageProviders;
 namespace StorageProviders.Tests;
 
 
-public class ReadWriteTests(IEventStorage storageProvider) : StorageProviderTestFixture(storageProvider)
+public class EventStorageTests(IEventStorage storageProvider) : StorageProviderTestFixture(storageProvider)
 {
     [Test]
     public void An_event_can_be_appended_to_the_event_storage()

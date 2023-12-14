@@ -15,7 +15,6 @@
         <PackageReference Include="Testcontainers.EventStoreDb" Version="3.6.0" />
         <PackageReference Include="Testcontainers.MongoDb" Version="3.6.0" />
         <PackageReference Include="Testcontainers.PostgreSql" Version="3.6.0" />
-        <PackageReference Include="Testcontainers.Redis" Version="3.6.0" />
     </ItemGroup>
 
 </Project>

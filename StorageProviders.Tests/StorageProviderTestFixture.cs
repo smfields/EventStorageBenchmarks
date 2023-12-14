@@ -1,9 +1,10 @@
 ﻿using System.Text.Json;
 using EventStorageBenchmarks.StorageProviders;
+using EventStorageBenchmarks.StorageProviders.EventStorage;
 
 namespace StorageProviders.Tests;
 
-[TestFixtureSource(typeof(AllStorageProviders))]
+[TestFixtureSource(typeof(AllEventStorageProviders))]
 public abstract class StorageProviderTestFixture(IEventStorage storageProvider)
 {
     protected IEventStorage StorageProvider { get; } = storageProvider;

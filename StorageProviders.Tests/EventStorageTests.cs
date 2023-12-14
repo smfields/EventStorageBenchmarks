@@ -1,5 +1,6 @@
 using System.Text.Json;
 using EventStorageBenchmarks.StorageProviders;
+using EventStorageBenchmarks.StorageProviders.EventStorage;
 
 namespace StorageProviders.Tests;
 
@@ -92,7 +93,7 @@ public class EventStorageTests(IEventStorage storageProvider) : StorageProviderT
         await StorageProvider.AppendEventsAsync(
             streamId,
             0,
-            events.Select(x => JsonSerializer.SerializeToUtf8Bytes(x))
+            events.Select(SerializeSampleEvent)
         );
 
         var eventData = await StorageProvider.ReadEventsAsync(streamId).ToListAsync();
@@ -124,5 +125,53 @@ public class EventStorageTests(IEventStorage storageProvider) : StorageProviderT
 
         var storedEvents = await StorageProvider.ReadEventsAsync(streamId).ToListAsync();
         Assert.That(storedEvents, Has.Count.EqualTo(2));
+    }
+
+    [Test]
+    public async Task Streams_can_be_read_starting_from_a_specified_version()
+    {
+        List<SampleEvent> events =
+        [
+            new SampleEvent("Event1", 1),
+            new SampleEvent("Event2", 2),
+            new SampleEvent("Event3", 3),
+        ];
+        var streamId = Guid.NewGuid().ToString();
+        await StorageProvider.AppendEventsAsync(
+            streamId,
+            0,
+            events.Select(SerializeSampleEvent)
+        );
+
+        var readEvents = (await StorageProvider.ReadEventsAsync(streamId, 1).ToListAsync())
+                         .Select(DeserializeSampleEvent)
+                         .ToList();
+        
+        Assert.That(readEvents, Has.Count.EqualTo(2));
+        Assert.That(readEvents.First(), Is.EqualTo(events[1]));
+    }
+
+    [Test]
+    public async Task Max_count_can_be_used_to_control_the_number_of_events_returned()
+    {
+        List<SampleEvent> events =
+        [
+            new SampleEvent("Event1", 1),
+            new SampleEvent("Event2", 2),
+            new SampleEvent("Event3", 3),
+        ];
+        var streamId = Guid.NewGuid().ToString();
+        await StorageProvider.AppendEventsAsync(
+            streamId,
+            0,
+            events.Select(SerializeSampleEvent)
+        );
+
+        var readEvents = (await StorageProvider.ReadEventsAsync(streamId, 0, 1).ToListAsync())
+                         .Select(DeserializeSampleEvent)
+                         .ToList();
+        
+        Assert.That(readEvents, Has.Count.EqualTo(1));
+        Assert.That(readEvents.First(), Is.EqualTo(events[0]));
     }
 }

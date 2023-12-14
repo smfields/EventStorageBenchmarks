@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using BenchmarkDotNet.Attributes;
 using EventStorageBenchmarks.StorageProviders;
+using EventStorageBenchmarks.StorageProviders.EventStorage;
 
 namespace EventStorageBenchmarks.Benchmarks;
 
@@ -9,7 +10,7 @@ public class AppendBenchmarks
     [ParamsSource(nameof(EventStorageProviders))]
     public IEventStorage EventStorage { get; set; } = null!;
 
-    public IEnumerable<IEventStorage> EventStorageProviders() => new AllStorageProviders();
+    public IEnumerable<IEventStorage> EventStorageProviders() => new AllEventStorageProviders();
     
     [Params(1_000)]
     public int NumEvents { get; set; }

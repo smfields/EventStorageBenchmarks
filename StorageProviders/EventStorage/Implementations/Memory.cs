@@ -1,4 +1,4 @@
-﻿namespace EventStorageBenchmarks.StorageProviders.Implementations;
+﻿namespace EventStorageBenchmarks.StorageProviders.EventStorage.Implementations;
 
 public class Memory : IEventStorage
 {
@@ -19,11 +19,12 @@ public class Memory : IEventStorage
         return Task.CompletedTask;
     }
 
-    public IAsyncEnumerable<byte[]> ReadEventsAsync(string streamId)
+    public IAsyncEnumerable<byte[]> ReadEventsAsync(string streamId, int fromVersion = 0, int maxCount = int.MaxValue)
     {
         if (_events.TryGetValue(streamId, out var events))
         {
-            return _events[streamId].ToAsyncEnumerable();
+            maxCount = Math.Min(events.Count - fromVersion, maxCount);
+            return events.GetRange(fromVersion, maxCount).ToAsyncEnumerable();
         }
 
         throw new StreamNotFoundException(streamId);

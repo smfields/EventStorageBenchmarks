@@ -1,13 +1,10 @@
-﻿using System.Text.RegularExpressions;
-using Marten;
+﻿using Marten;
 using Marten.Events;
 using Marten.Exceptions;
-using Polly;
-using Polly.Retry;
 using Testcontainers.PostgreSql;
 using Weasel.Core;
 
-namespace EventStorageBenchmarks.StorageProviders.Implementations;
+namespace EventStorageBenchmarks.StorageProviders.EventStorage.Implementations;
 
 public class MartenDb : IEventStorage, IAsyncDisposable
 {
@@ -54,10 +51,12 @@ public class MartenDb : IEventStorage, IAsyncDisposable
         }
     }
 
-    public async IAsyncEnumerable<byte[]> ReadEventsAsync(string streamId)
+    public async IAsyncEnumerable<byte[]> ReadEventsAsync(string streamId, int fromVersion = 0, int maxCount = int.MaxValue)
     {
         await using var session = Db.LightweightSession();
-        var events = await session.Events.FetchStreamAsync(streamId);
+        
+        var lastIndexLimit = fromVersion >= int.MaxValue - maxCount ? int.MaxValue : fromVersion + maxCount;
+        var events = await session.Events.FetchStreamAsync(streamId, version: lastIndexLimit, fromVersion: fromVersion + 1);
 
         if (events.IsEmpty())
         {

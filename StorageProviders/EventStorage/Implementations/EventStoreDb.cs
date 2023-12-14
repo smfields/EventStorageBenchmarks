@@ -1,7 +1,7 @@
 ﻿using EventStore.Client;
 using Testcontainers.EventStoreDb;
 
-namespace EventStorageBenchmarks.StorageProviders.Implementations;
+namespace EventStorageBenchmarks.StorageProviders.EventStorage.Implementations;
 
 public class EventStoreDb : IEventStorage, IAsyncDisposable
 {
@@ -38,9 +38,9 @@ public class EventStoreDb : IEventStorage, IAsyncDisposable
         }
     }
 
-    public async IAsyncEnumerable<byte[]> ReadEventsAsync(string streamId)
+    public async IAsyncEnumerable<byte[]> ReadEventsAsync(string streamId, int fromVersion = 0, int maxCount = int.MaxValue)
     {
-        var events = EventStoreClient.ReadStreamAsync(Direction.Forwards, streamId, StreamPosition.Start);
+        var events = EventStoreClient.ReadStreamAsync(Direction.Forwards, streamId, (uint)fromVersion, maxCount);
 
         if (await events.ReadState == ReadState.StreamNotFound)
         {

@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using EventStorageBenchmarks.StorageProviders.Implementations;
+using EventStorageBenchmarks.StorageProviders.EventStorage.Implementations;
 
-namespace EventStorageBenchmarks.StorageProviders;
+namespace EventStorageBenchmarks.StorageProviders.EventStorage;
 
-public class AllStorageProviders : IEnumerable<IEventStorage>
+public class AllEventStorageProviders : IEnumerable<IEventStorage>
 {
     public IEnumerator<IEventStorage> GetEnumerator()
     {

@@ -1,7 +1,7 @@
 ﻿using EventStore.Client;
 using Testcontainers.EventStoreDb;
 
-namespace EventStorageBenchmarks.StorageProviders.EventStorage.Implementations;
+namespace EventStorageBenchmarks.StorageProviders.Implementations;
 
 public class EventStoreDb : IEventStorage, IAsyncDisposable
 {

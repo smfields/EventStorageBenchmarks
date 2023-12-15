@@ -1,4 +1,4 @@
-﻿namespace EventStorageBenchmarks.StorageProviders.EventStorage;
+﻿namespace EventStorageBenchmarks.StorageProviders;
 
 public interface IEventStorage
 {

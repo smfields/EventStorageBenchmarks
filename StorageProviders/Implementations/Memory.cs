@@ -1,4 +1,4 @@
-﻿namespace EventStorageBenchmarks.StorageProviders.EventStorage.Implementations;
+﻿namespace EventStorageBenchmarks.StorageProviders.Implementations;
 
 public class Memory : IEventStorage
 {

@@ -4,7 +4,7 @@ using Marten.Exceptions;
 using Testcontainers.PostgreSql;
 using Weasel.Core;
 
-namespace EventStorageBenchmarks.StorageProviders.EventStorage.Implementations;
+namespace EventStorageBenchmarks.StorageProviders.Implementations;
 
 public class MartenDb : IEventStorage, IAsyncDisposable
 {

@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using EventStorageBenchmarks.StorageProviders;
-using EventStorageBenchmarks.StorageProviders.EventStorage;
 
 namespace StorageProviders.Tests;
 

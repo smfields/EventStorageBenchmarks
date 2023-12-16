@@ -78,6 +78,30 @@ public class EventStorageTests(IEventStorage storageProvider) : StorageProviderT
     }
     
     [Test]
+    [Ignore("Events cannot currently be appended in parallel")]
+    public async Task Multiple_events_can_be_appended_in_parallel()
+    {
+        var events = Enumerable.Range(0, 1000)
+            .Select(i => new SampleEvent("Event" + i, i))
+            .ToList();
+        var streamId = Guid.NewGuid().ToString();
+
+        var expectedVersion = 0;
+        var tasks = events.Select(
+            sampleEvent => StorageProvider.AppendEventsAsync(
+                streamId,
+                expectedVersion++,
+                [SerializeSampleEvent(sampleEvent)]
+            )
+        );
+        await Task.WhenAll(tasks);
+
+        var eventData = await StorageProvider.ReadEventsAsync(streamId).ToListAsync();
+        var roundTripEvents = eventData.Select(DeserializeSampleEvent).ToList();
+        Assert.That(roundTripEvents, Is.EquivalentTo(events));
+    }
+    
+    [Test]
     public async Task Multiple_events_can_be_appended_in_a_single_batch()
     {
         List<SampleEvent> events =

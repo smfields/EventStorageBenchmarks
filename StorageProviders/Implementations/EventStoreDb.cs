@@ -10,7 +10,7 @@ public class EventStoreDb : IEventStorage, IAsyncDisposable
     
     public async Task InitializeAsync()
     {
-        Container = new EventStoreDbBuilder().Build();
+        Container = new EventStoreDbBuilder().WithImage("eventstore/eventstore:lts").Build();
         await Container.StartAsync();
 
         var clientSettings = EventStoreClientSettings.Create(Container.GetConnectionString());
@@ -22,7 +22,8 @@ public class EventStoreDb : IEventStorage, IAsyncDisposable
         var eventData = events
             .Select(@event => new EventData(Uuid.NewUuid(), "Event", @event));
 
-        var expectedRevision = expectedVersion == 0 ? StreamRevision.None : (uint)(expectedVersion - 1);
+        var expectedRevision =
+            expectedVersion == 0 ? Expected.NoStream : Expected.FromRevision((uint)(expectedVersion - 1));
 
         try
         {
@@ -63,4 +64,32 @@ public class EventStoreDb : IEventStorage, IAsyncDisposable
     }
 
     public override string ToString() => "EventStoreDb";
+}
+
+public abstract record Expected {
+    public static readonly Expected NoStream = new State(StreamState.NoStream);
+    public static readonly Expected StreamExists = new State(StreamState.StreamExists);
+    public static readonly Expected Any = new State(StreamState.Any);
+
+    public static Expected FromRevision(StreamRevision streamRevision) => new Revision(streamRevision);
+
+    internal sealed record State(StreamState StreamState) : Expected;
+
+    internal sealed record Revision(StreamRevision StreamRevision) : Expected;
+}
+
+public static class EventStoreClientExtensions {
+    public static Task<IWriteResult> AppendToStreamAsync(this EventStoreClient client, string streamName,
+        Expected expected,
+        IEnumerable<EventData> eventData,
+        Action<EventStoreClientOperationOptions>? configureOperationOptions = null,
+        TimeSpan? deadline = null,
+        UserCredentials? userCredentials = null,
+        CancellationToken cancellationToken = default) => expected switch {
+        Expected.State(var state) => client.AppendToStreamAsync(streamName, state, eventData,
+            configureOperationOptions, deadline, userCredentials, cancellationToken),
+        Expected.Revision(var revision) => client.AppendToStreamAsync(streamName, revision, eventData,
+            configureOperationOptions, deadline, userCredentials, cancellationToken),
+        _ => throw new ArgumentException($"{expected.GetType()} not expected", nameof(expected))
+    };
 }
